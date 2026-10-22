@@ -5,7 +5,14 @@ class GameState:
     sceneState= SceneState.GAME
 gameState = GameState()
 
-mouse = Node(0,0,0,0)
+
+class Mouse(Node):
+    def update(self):
+        mouse.position.x = pygame.mouse.get_pos()[0]
+        mouse.position.y = pygame.mouse.get_pos()[1]
+
+
+mouse = Mouse(0,0,0,0)
 
 window= pygame.display.set_mode((800, 600))
 window.fill((0,0,0))

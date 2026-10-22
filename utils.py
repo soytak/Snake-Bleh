@@ -1,37 +1,65 @@
 from enum import Enum
 import pygame
+import typing
+
+
+class Shape(Enum):
+    RECTANGLE =1
+    CERCLE    =2
+    NONE      =3
 
 class Position:
-    def __init__(self, x, y):
+    def __init__(self, x: float, y: float):
         self.x= x
         self.y= y
 
 class Size:
-    def __init__(self, width, height):
+    def __init__(self, width: float, height: float):
         self.width= width
         self.height= height
 
 class Node:
-    def __init__(self, x, y, width, height, surface= None):
-        self.position= Position(x, y)
-        self.size= Size(width, height)
-        self.surface= surface
+    def __init__(self, x: float, y: float, width: float, height: float,
+                    surface= None, shape: Shape= Shape.NONE, color: pygame.Color = pygame.Color(0,0,0)):
+        self.position = Position(x, y)
+        self.size = Size(width, height)
+        self.surface = surface
+        self.childs: list[Node] = []
+        self.shape = shape
+        self.color = color
         
-    def draw(self, window):
+        
+    def draw(self, window: pygame.Surface, ox: float= 0, oy: float= 0):
+        self.drawChildrens(window, ox, oy)
         if self.surface and window:
-            window.blit(self.surface, (self.position.x, self.position.y))
-    def fill(self):
+            window.blit(self.surface, (self.position.x + ox, self.position.y + oy))
+        elif window and self.shape == Shape.RECTANGLE:
+            pygame.draw.rect(window, self.color, (self.position.x + ox, self.position.y + oy, self.size.width, self.size.height))
+        elif window and self.shape == Shape.CERCLE:
+            pygame.draw.ellipse(window, self.color, (self.position.x + ox, self.position.y + oy, self.size.width, self.size.height))
+
+    def drawChildrens(self, window: pygame.Surface, ox: float= 0, oy: float= 0):
+        for child in self.childs:
+            child.draw(window, self.position.x + ox, self.position.y + oy)
+    def fill(self, r: int, g: int, b: int):
         self.surface = pygame.surface.Surface((self.size.width,self.size.height))
+        self.surface.fill((r,g,b))
     def fillImage(self, path):
-        self.surface = pygame.transform.scale(pygame.image.load(path).convert_alpha(), (self.size.width, self.size.height)) 
+        self.surface = pygame.transform.scale(pygame.image.load(path).convert_alpha(), (self.size.width, self.size.height))
+    def inOtherNode(self, node: Node) -> bool:
+        return node_collision(self, node)
+    def addChildRecursively(self, n: list[Node]):
+        parent = self
+        for node in n:
+            parent.childs.append(node)
+            parent = node
+    def printChild(self):
+        for child in self.childs:
+            print(self)
+            child.printChild()
 
 
-class Player(Node):
-    def __init__(self, x, y, width, height, surface=None):
-        super().__init__(x, y, width, height, surface)
-        self.vel= pygame.Vector2(0,0)
-
-def node_collision(node, node2):
+def node_collision(node: Node, node2: Node) -> bool:
     return (node.position.x <= (node2.position.x + node2.size.width) and
             (node.position.x+ node.size.width) >= node2.position.x and
             node.position.y <= (node2.position.y + node2.size.height) and
