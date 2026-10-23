@@ -7,7 +7,6 @@ import math
 class Player(Node):
     def __init__(self, x: float, y: float, width: float, height: float, color: pygame.Color = pygame.Color(0,0,0)):
         super().__init__(x, y, width, height, None, Shape.CERCLE, color)
-        self.orientation: float = 0
         self.orientationStep: float = 0
         self.speed: float = 5
         body: list[Node]= []
@@ -24,7 +23,7 @@ player = Player(0, 0, 64, 64, pygame.Color(255, 10, 255))
 
 
 apple = Node(0, 0, 64, 64)
-apple.fillImage("assets/imgs/apple.png")
+apple.setImage("assets/imgs/apple.png")
 
 unpause = Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0, 0, 0, 100))
 
@@ -36,7 +35,6 @@ class Game(Scene):
                     gameState.scene = Scenes.QUIT
                 if event.type == pygame.KEYDOWN:
                     player.orientationStep = (event.key == pygame.K_RIGHT)-(event.key == pygame.K_LEFT)
-                    print(player.orientation)
                     if event.key == pygame.K_ESCAPE:
                         gameState.sceneState = SceneState.PAUSE
                 if event.type == pygame.KEYUP:
