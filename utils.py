@@ -49,16 +49,30 @@ class Node:
         self.orientation: float = 0 #here to work on
         self.childs: list[Node] = []
         self.parent: typing.Optional[Node] = None
-        
+        self.lock: bool = False
+
+    def lockGraphicRotation(self) -> Node:
+        self.lock = True
+        return self
+    def unlockGraphicRotation(self) -> Node:
+        self.lock = False
+        return self
+
+    def update(self):
+        pass
+
     def draw(self, window: pygame.Surface):
         self.drawChildrens(window)
         if not self.surface: return
+        rotatedSurface = pygame.transform.rotate(self.surface, self.getGlobalOrientation()) if not self.lock else self.surface
         if self.surface and window:
-            window.blit(self.surface, (self.getGlobalPosition().x, self.getGlobalPosition().y))
+            window.blit(rotatedSurface, (self.getGlobalPosition().x, self.getGlobalPosition().y))
         elif window and self.shape == Shape.RECTANGLE:
-            pygame.draw.rect(window, self.color, (self.getGlobalPosition().x, self.getGlobalPosition().y, self.size.width, self.size.height))
+            window.blit(rotatedSurface, (self.getGlobalPosition().x, self.getGlobalPosition().y))
+            #pygame.draw.rect(window, self.color, (self.getGlobalPosition().x, self.getGlobalPosition().y, self.size.width, self.size.height))
         elif window and self.shape == Shape.CERCLE:
-            pygame.draw.ellipse(window, self.color, (self.getGlobalPosition().x, self.getGlobalPosition().y, self.size.width, self.size.height))
+            window.blit(rotatedSurface, (self.getGlobalPosition().x, self.getGlobalPosition().y))
+            #pygame.draw.ellipse(window, self.color, (self.getGlobalPosition().x, self.getGlobalPosition().y, self.size.width, self.size.height))
 
     def drawChildrens(self, window: pygame.Surface):
         for child in self.childs:
@@ -101,8 +115,44 @@ class Node:
         if self.parent: return self.parent.getGlobalOrientation() + self.orientation
         return self.orientation
 
-class IKbone(Node):
-    pass
+class IKbone():
+    RANGE = 50
+
+    def __init__(self, angle: float, radius: float, parent: None | IKbone = None, color: pygame.Color = pygame.Color(0,0,0)) -> None:
+        self.radius = radius
+        self.color = color
+        self.parent = parent
+        self.childs: list[IKbone] = []
+        self.position: Position = Position(0,0)
+        """Cashed centered position"""
+        self.angle = angle
+        self.setAngle(angle)
+
+    def setAngle(self, angleDegree: float):
+        self.angle = angleDegree
+        if not self.parent: return
+        self.position= Position(math.cos(math.radians(self.angle))*self.RANGE, math.sin(math.radians(self.angle))*self.RANGE)
+
+    def draw(self, window: pygame.Surface):
+        for child in self.childs:
+            child.draw(window)
+        pygame.draw.circle(window, self.color, (self.getGlobalPosition().x, self.getGlobalPosition().y), self.radius)
+
+    def getGlobalPosition(self) -> Position:
+        if self.parent: return self.parent.getGlobalPosition() + self.position
+        return self.position
+
+    def addChild(self, child: IKbone):
+        child.parent = self
+        child.setAngle(child.angle)
+        self.childs.append(child)
+
+    def addChildRecursively(self, n: list[IKbone]):
+        parent = self
+        for node in n:
+            parent.addChild(node)
+            parent = node
+
 
 def rect_collision(position: Position, size: Size, position2: Position, size2: Size) -> bool:
     return (position.x <= (position2.x + size2.width) and

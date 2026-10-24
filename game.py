@@ -1,25 +1,30 @@
+from typing import Any
+
+from pygame import Color
+from pygame.color import Color as Color
+
 from utils import *
 from globals import *
 from scene import Scene
 import random
 import math
 
-class Player(Node):
-    def __init__(self, x: float, y: float, width: float, height: float, color: pygame.Color = pygame.Color(0,0,0)):
-        super().__init__(x, y, width, height, None, Shape.CERCLE, color)
+from utils import IKbone
+
+class Player(IKbone):
+    def __init__(self, angle: float, radius: float, parent: None | IKbone = None, color: Color = pygame.Color(0, 0, 0)) -> None:
+        super().__init__(angle, radius, parent, color)
         self.orientationStep: float = 0
         self.speed: float = 5
-        body: list[Node]= []
+        body: list[IKbone]= []
         bodyBoneData: list[float] = [65, 70, 60, 50, 40, 30, 20, 10]
-        SPACING = 20
         for i in range(0, len(bodyBoneData)):
-            previous: float = width if (i==0) else bodyBoneData[i-1]
             current: float = bodyBoneData[i]
-            node = Node(-SPACING, (previous-current)/2 , current, current, None, Shape.CERCLE, self.color)
+            node: IKbone = IKbone(180, current, None, pygame.Color(100,255,0))
             body.append(node)
         self.addChildRecursively(body)
 
-player = Player(0, 0, 64, 64, pygame.Color(255, 10, 255))
+player = Player(0, 60, None, pygame.Color(255, 10, 255))
 
 
 apple = Node(0, 0, 64, 64)
@@ -40,9 +45,9 @@ class Game(Scene):
                 if event.type == pygame.KEYUP:
                     player.orientationStep = 0
 
-            player.orientation += player.orientationStep/10
-            player.position.x += math.cos(math.radians(player.orientation))*player.speed/100
-            player.position.y += math.sin(math.radians(player.orientation))*player.speed/100
+            player.angle += player.orientationStep/10
+            player.position.x += math.cos(math.radians(player.angle))*player.speed/100
+            player.position.y += math.sin(math.radians(player.angle))*player.speed/100
         else:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
