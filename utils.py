@@ -118,34 +118,44 @@ class Node:
 class IKbone():
     RANGE = 50
 
-    def __init__(self, angle: float, radius: float, parent: None | IKbone = None, color: pygame.Color = pygame.Color(0,0,0)) -> None:
+    def __init__(self, position: Position, radius: float, parent: None | IKbone = None, color: pygame.Color = pygame.Color(0,0,0)) -> None:
         self.radius = radius
         self.color = color
-        self.parent = parent
         self.childs: list[IKbone] = []
-        self.position: Position = Position(0,0)
+        self.position: Position = position
         """Cashed centered position"""
-        self.angle = angle
-        self.setAngle(angle)
+        self.parent= parent
+        if parent: self.addParent(parent)
 
-    def setAngle(self, angleDegree: float):
-        self.angle = angleDegree
+    def update(self):
+        self.updateSelfPosition()
+        for child in self.childs:
+            child.update()
+
+    def updateSelfPosition(self):
         if not self.parent: return
-        self.position= Position(math.cos(math.radians(self.angle))*self.RANGE, math.sin(math.radians(self.angle))*self.RANGE)
+        # revert global to local position
+        dx = self.position.x - self.parent.position.x
+        dy = self.position.y - self.parent.position.y
+        angle = math.atan2(dy, dx)
+        self.position = Position(
+            self.parent.position.x + math.cos(angle) * self.RANGE,
+            self.parent.position.y + math.sin(angle) * self.RANGE,
+        )
+
+    def getAngleRadian(self) -> float:
+        return math.atan2(self.position.y, self.position.x)
 
     def draw(self, window: pygame.Surface):
         for child in self.childs:
             child.draw(window)
-        pygame.draw.circle(window, self.color, (self.getGlobalPosition().x, self.getGlobalPosition().y), self.radius)
-
-    def getGlobalPosition(self) -> Position:
-        if self.parent: return self.parent.getGlobalPosition() + self.position
-        return self.position
+        pygame.draw.circle(window, self.color, (self.position.x, self.position.y), self.radius)
 
     def addChild(self, child: IKbone):
         child.parent = self
-        child.setAngle(child.angle)
         self.childs.append(child)
+    def addParent(self, parent: IKbone):
+        parent.addChild(self)
 
     def addChildRecursively(self, n: list[IKbone]):
         parent = self

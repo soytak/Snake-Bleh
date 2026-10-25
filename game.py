@@ -12,19 +12,20 @@ import math
 from utils import IKbone
 
 class Player(IKbone):
-    def __init__(self, angle: float, radius: float, parent: None | IKbone = None, color: Color = pygame.Color(0, 0, 0)) -> None:
-        super().__init__(angle, radius, parent, color)
+    def __init__(self, position: Position, radius: float, parent: None | IKbone = None, color: Color = pygame.Color(0, 0, 0)) -> None:
+        super().__init__(position, radius, parent, color)
         self.orientationStep: float = 0
+        self.angle: float = 0
         self.speed: float = 5
         body: list[IKbone]= []
         bodyBoneData: list[float] = [65, 70, 60, 50, 40, 30, 20, 10]
         for i in range(0, len(bodyBoneData)):
             current: float = bodyBoneData[i]
-            node: IKbone = IKbone(180, current, None, pygame.Color(100,255,0))
+            node: IKbone = IKbone(Position(-10,0), current, None, pygame.Color(100,255,0))
             body.append(node)
         self.addChildRecursively(body)
 
-player = Player(0, 60, None, pygame.Color(255, 10, 255))
+player = Player(Position(0,0), 60, None, pygame.Color(255, 10, 255))
 
 
 apple = Node(0, 0, 64, 64)
@@ -48,6 +49,7 @@ class Game(Scene):
             player.angle += player.orientationStep/10
             player.position.x += math.cos(math.radians(player.angle))*player.speed/100
             player.position.y += math.sin(math.radians(player.angle))*player.speed/100
+            player.update()
         else:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
