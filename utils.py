@@ -2,7 +2,7 @@ from enum import Enum
 import pygame
 import typing
 import math
-
+from globals import TEXTFONT
 
 class Shape(Enum):
     SURFACE   =0
@@ -35,12 +35,15 @@ class Size:
 
 class Node:
     def __init__(self, x: float, y: float, width: float, height: float,
-                    surface= None, shape: Shape= Shape.NONE, color: pygame.Color = pygame.Color(0,0,0)):
+                    surface= None, shape: Shape= Shape.NONE, color: pygame.Color = pygame.Color(0,0,0),
+                    text = "", textColor: pygame.Color = pygame.Color(0,0,0)):
         self.position = Position(x, y)
-        self.size = Size(width, height)
+        self.size  = Size(width, height)
         self.surface: typing.Optional[pygame.Surface] = surface
         self.shape = shape if self.surface == None else Shape.SURFACE
         self.color = color
+        self.textColor = textColor
+        self.text  = TEXTFONT.render(text, False, self.textColor)
         match shape:
             case Shape.RECTANGLE:
                 self.setRect()
@@ -75,6 +78,7 @@ class Node:
         elif window and self.shape == Shape.CERCLE:
             window.blit(rotatedSurface, (self.getGlobalPosition().x, self.getGlobalPosition().y))
             #pygame.draw.ellipse(window, self.color, (self.getGlobalPosition().x, self.getGlobalPosition().y, self.size.width, self.size.height))
+        window.blit(self.text, (self.position.x+self.size.width/2-self.text.width/2, self.position.y+self.size.height/2-self.text.height/2))
 
     def drawChildrens(self, window: pygame.Surface):
         for child in self.childs:

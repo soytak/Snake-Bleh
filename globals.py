@@ -1,3 +1,5 @@
+import pygame
+TEXTFONT = pygame.font.SysFont(pygame.font.get_default_font(), 30)
 from utils import *
 
 class GameState:

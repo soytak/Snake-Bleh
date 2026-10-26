@@ -27,11 +27,10 @@ class Player(IKbone):
 
 player = Player(Position(0,0), 60, None, pygame.Color(255, 10, 255))
 
-
 apple = Node(0, 0, 64, 64)
 apple.setImage("assets/imgs/apple.png")
 
-unpause = Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0, 0, 0, 100))
+unpause = Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0, 0, 0, 100), "Quit", pygame.Color(255,255,255))
 
 
 class Game(Scene):

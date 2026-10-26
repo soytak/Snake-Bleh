@@ -1,4 +1,5 @@
 import pygame
+pygame.font.init()
 from globals import *
 from enum import Enum
 
@@ -9,6 +10,7 @@ pygame.init()
 
 game = Game()
 menu = Menu()
+
 
 while gameState.scene != Scenes.QUIT:
     mouse.update()
