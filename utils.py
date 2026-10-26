@@ -30,6 +30,8 @@ class Size:
         self.height= height
     def __add__(self, other: Size):
         return Size(self.width + other.width, self.height + other.height)
+    def getSizeHalf(self):
+        return Size(self.width/2, self.height/2)
 
 class Node:
     def __init__(self, x: float, y: float, width: float, height: float,
@@ -115,6 +117,9 @@ class Node:
         if self.parent: return self.parent.getGlobalOrientation() + self.orientation
         return self.orientation
 
+    def getCenterPosition(self) -> Position:
+        return Position(self.position.x+self.size.getSizeHalf().width, self.position.y+self.size.getSizeHalf().height)
+
 class IKbone():
     RANGE = 50
 
@@ -143,6 +148,15 @@ class IKbone():
             self.parent.position.y + math.sin(angle) * self.RANGE,
         )
 
+    def inOther(self, node: IKbone):
+        cercleCercleCollision(self.position, self.radius, node.position, node.radius)
+
+    def bodyInCerle(self, position: Position, radius: float):
+        if(cercleCercleCollision(self.position, self.radius, position, radius)): return True
+        for child in self.childs:
+            if(child.bodyInCerle(position, radius)): return True
+        return False
+
     def getAngleRadian(self) -> float:
         return math.atan2(self.position.y, self.position.x)
 
@@ -170,6 +184,8 @@ def rect_collision(position: Position, size: Size, position2: Position, size2: S
             position.y <= (position2.y + size2.height) and
             (position.y+ size.height) >= position2.y
             )
+def cercleCercleCollision(position: Position, radius: float, position2: Position, radius2: float):
+    return abs(math.dist([position.x, position.y],[position2.x, position2.y]))<(radius+radius2)
 
 class Scenes(Enum):
     GAME = 1

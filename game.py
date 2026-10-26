@@ -21,7 +21,7 @@ class Player(IKbone):
         bodyBoneData: list[float] = [65, 70, 60, 50, 40, 30, 20, 10]
         for i in range(0, len(bodyBoneData)):
             current: float = bodyBoneData[i]
-            node: IKbone = IKbone(Position(-10,0), current, None, pygame.Color(100,255,0))
+            node: IKbone = IKbone(Position(-10,0), current, None, pygame.Color(100,255,100))
             body.append(node)
         self.addChildRecursively(body)
 
@@ -33,7 +33,9 @@ apple.setImage("assets/imgs/apple.png")
 
 unpause = Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0, 0, 0, 100))
 
+
 class Game(Scene):
+    points: int = 0
     def input(self):
         if gameState.sceneState == SceneState.GAME:
             for event in pygame.event.get():
@@ -50,6 +52,9 @@ class Game(Scene):
             player.position.x += math.cos(math.radians(player.angle))*player.speed/100
             player.position.y += math.sin(math.radians(player.angle))*player.speed/100
             player.update()
+            if(player.bodyInCerle(apple.getCenterPosition(), 5)):
+                setNodeToRandomPlace(apple)
+                self.points+=1
         else:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -68,6 +73,6 @@ class Game(Scene):
         if gameState.sceneState == SceneState.PAUSE:
             unpause.draw(window)
 
-def setAppleToRandomPlace(n: Node):
+def setNodeToRandomPlace(n: Node):
     n.position.x = random.uniform(0, window.width-n.size.width)
     n.position.y = random.uniform(0, window.height- n.size.height)
