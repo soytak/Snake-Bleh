@@ -85,13 +85,16 @@ class Node:
             child.draw(window)
     def setRect(self):
         self.shape = Shape.RECTANGLE
-        self.surface = pygame.surface.Surface((self.size.width,self.size.height))
-        self.surface.fill(self.color)
+        self.surface = pygame.surface.Surface((self.size.width,self.size.height), pygame.SRCALPHA)
+        self.surface.fill((0, 0, 0, 0))
+        pygame.draw.rect(self.surface, self.color, (0, 0, int(self.size.width), int(self.size.height)))
     def setEllipse(self):
         self.shape = Shape.CERCLE
         self.surface = pygame.surface.Surface((self.size.width,self.size.height), pygame.SRCALPHA)
+        self.surface.fill((0, 0, 0, 0))
         pygame.draw.ellipse(self.surface, self.color, (0,0,self.size.width,self.size.height))
-
+    def setText(self, text):
+        self.text = TEXTFONT.render(text, False, self.textColor)
     def setImage(self, path):
         self.shape = Shape.SURFACE
         self.surface = pygame.transform.scale(pygame.image.load(path).convert_alpha(), (self.size.width, self.size.height))

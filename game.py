@@ -31,7 +31,7 @@ apple = Node(0, 0, 64, 64)
 apple.setImage("assets/imgs/apple.png")
 
 unpause = Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0, 0, 0, 100), "Quit", pygame.Color(255,255,255))
-
+score = Node(window.width/2-200/2, 20, 200, 100, None, Shape.RECTANGLE, pygame.Color(0,0,0,0), "0", pygame.Color(0,0,0))
 
 class Game(Scene):
     points: int = 0
@@ -54,6 +54,7 @@ class Game(Scene):
             if(player.bodyInCerle(apple.getCenterPosition(), 5)):
                 setNodeToRandomPlace(apple)
                 self.points+=1
+                score.setText(str(self.points))
         else:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -69,6 +70,7 @@ class Game(Scene):
     def draw(self, window):
         player.draw(window)
         apple.draw(window)
+        score.draw(window)
         if gameState.sceneState == SceneState.PAUSE:
             unpause.draw(window)
 
