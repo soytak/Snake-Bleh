@@ -128,7 +128,7 @@ class Node:
         return Position(self.position.x+self.size.getSizeHalf().width, self.position.y+self.size.getSizeHalf().height)
 
 class IKbone():
-    RANGE = 50
+    RANGE = 20
 
     def __init__(self, position: Position, radius: float, parent: None | IKbone = None, color: pygame.Color = pygame.Color(0,0,0)) -> None:
         self.radius = radius

@@ -11,7 +11,6 @@ pygame.init()
 game = Game()
 menu = Menu()
 
-
 while gameState.scene != Scenes.QUIT:
     mouse.update()
     if gameState.scene == Scenes.GAME:
