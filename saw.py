@@ -28,9 +28,9 @@ class Saw(Node):
         
         super().__init__(x, y, radius, radius, None, Shape.CERCLE, pygame.Color(255,0,0))
         self.speed = speed
-    def update(self):
-        self.position.x += math.cos(self.angle)*self.speed
-        self.position.y += math.sin(self.angle)*self.speed
+    def update(self, dt: float):
+        self.position.x += math.cos(self.angle)*self.speed*dt
+        self.position.y += math.sin(self.angle)*self.speed*dt
 
     def isOutOfWindow(self, window):
         return ((self.position.x > window.width + self.size.width)  or (self.position.x < -self.size.width)
@@ -46,7 +46,7 @@ class SawManager:
         self.difficultyFunc = difficultyFunc
         self.resetTimer()
 
-    def update(self, window):
+    def update(self, window, dt: float):
         self.updateTimer()
         if self.timer > self.difficultyFunc()[1]:
             self.resetTimer()
@@ -54,7 +54,7 @@ class SawManager:
             self.spawnSaw(self.difficultyFunc()[0])
             self.spawnSaw(self.difficultyFunc()[0])
         for saw in self.saws.copy():
-            saw.update()
+            saw.update(dt)
             if saw.isOutOfWindow(window):
                 if not saw.OutScreen:
                     self.saws.remove(saw)

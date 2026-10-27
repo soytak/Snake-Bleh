@@ -63,7 +63,7 @@ class Node:
         self.lock = False
         return self
 
-    def update(self):
+    def update(self, dt: float):
         pass
 
     def draw(self, window: pygame.Surface):
