@@ -3,9 +3,9 @@ from globals import *
 from scene import Scene
 
 bg: Node = Node(0, 0, window.get_width(), window.get_height(), None, Shape.RECTANGLE, pygame.Color(100, 100, 255))
-title: Node= Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0,0,0,0), "Snek bleh") 
-quit: Node = Node(window.get_width()/2-200/2, window.get_height()/2-100/2+ 200, 200, 100, None, Shape.RECTANGLE, pygame.Color(100, 30, 30), "Quit")
-play: Node = Node(window.get_width()/2-200/2, window.get_height()/2-100/2- 200, 200, 100, None, Shape.RECTANGLE, pygame.Color(100, 100, 100), "Play")
+title: Node= Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0,0,0,0), "Snek bleh", pygame.Color(0,0,0), 80) 
+quit: Node = Node(window.get_width()/2-200/2, window.get_height()/2-100/2+ 200, 200, 100, None, Shape.RECTANGLE, pygame.Color(100, 30, 30), "Quit", pygame.Color(0,0,0), 50)
+play: Node = Node(window.get_width()/2-200/2, window.get_height()/2-100/2- 200, 200, 100, None, Shape.RECTANGLE, pygame.Color(100, 100, 100), "Play", pygame.Color(0,0,0), 50)
 
 class Menu(Scene):
     def input(self):

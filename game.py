@@ -1,6 +1,6 @@
 from typing import Any
 
-from pygame import Color
+from pygame import Color, Surface
 from pygame.color import Color as Color
 
 from utils import *
@@ -10,6 +10,7 @@ import random
 import math
 
 from saw import *
+from IKbone import *
 
 DEFAULT_SPEED = 180
 FAST_SPEED = 360
@@ -37,10 +38,10 @@ class Game(Scene):
         self.reset()
     def reset(self):
         self.points: int = 0
-        self.sawManager = SawManager(lambda: (self.points+100, 5-max(self.points/10, 0.1)))
+        self.sawManager = SawManager(lambda: (self.points+100, 5-max(self.points/8, 0.5)))
         self.bg = Node(0,0, window.width, window.height)
         self.bg.setImage("assets/imgs/grass.png")
-        self.player = Player(Position(0,0), 30, None, pygame.Color(70, 200, 70))
+        self.player = Player(Position(200,200), 30, None, pygame.Color(70, 200, 70))
 
         self.apple = Node(200, 200, 64, 64)
         self.apple.setImage("assets/imgs/apple.png")
@@ -92,7 +93,7 @@ class Game(Scene):
             self.points+=1
             self.score.setText(str(self.points))
             
-        if self.isSawPlayerCollision():
+        if self.isSawPlayerCollision() or self.isOutOfBound():
             gameState.sceneState = SceneState.DEATH
             self.ScoreText.setText("Score: "+ str(self.points))
 
@@ -101,7 +102,10 @@ class Game(Scene):
             if self.player.bodyInCerle(cercle[0], cercle[1]):
                 return True
         return False
-            
+
+    def isOutOfBound(self):
+        return not rect_collision(self.player.position, Size(self.player.radius, self.player.radius), Position(0,0), Size(window.width, window.height))
+
     def draw(self, window):
         self.bg.draw(window)
         if gameState.sceneState != SceneState.DEATH: self.player.draw(window, False)
