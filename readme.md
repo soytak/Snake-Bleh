@@ -8,7 +8,7 @@ Going out of the screen kills you.
 To run this code, you must dowload pygame (pygame-ce 2.5.8) and python (Python 3.15.0)
 Then, execute either run.sh (on Linux) or run.bat (on Windows)
 
-If you just want to play this game (on Windows), grab the bleh.exe file in the release or in dist/bleh.exe 
+If you just want to play this game (on Windows), grab the bleh.exe file in the release or in dist/main.exe 
 
 To get this code to an .exe, get pyinstaller and run toexe.bat (Windows)
 
