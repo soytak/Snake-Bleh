@@ -27,6 +27,9 @@ class Player(IKbone):
             body.append(node)
         self.addChildRecursively(body)
 
+    def getAngleRadian(self) -> float | None:
+        return math.radians(self.angle+180) #180 make it works, if it work it works
+
 
 class Game(Scene):
     def __init__(self) -> None:
@@ -35,13 +38,15 @@ class Game(Scene):
     def reset(self):
         self.points: int = 0
         self.sawManager = SawManager(lambda: (self.points+100, 5-max(self.points/10, 0.1)))
+        self.bg = Node(0,0, window.width, window.height)
+        self.bg.setImage("assets/imgs/grass.png")
         self.player = Player(Position(0,0), 30, None, pygame.Color(70, 200, 70))
 
         self.apple = Node(200, 200, 64, 64)
         self.apple.setImage("assets/imgs/apple.png")
 
         self.unpause = Node(window.get_width()/2-200/2, window.get_height()/2-100/2, 200, 100, None, Shape.RECTANGLE, pygame.Color(0, 0, 0, 100), "Quit", pygame.Color(255,255,255))
-        self.score = Node(window.width/2-200/2, 20, 200, 100, None, Shape.RECTANGLE, pygame.Color(0,0,0,0), "0", pygame.Color(0,0,0))
+        self.score = Node(window.width/2-200/2, 20, 200, 100, None, Shape.RECTANGLE, pygame.Color(0,0,0,0), "0", pygame.Color(255,255,255))
 
         self.deathBox = Node( window.get_width()/2-400/2, window.get_height()/2-250/2 ,400,250, None, Shape.RECTANGLE, pygame.Color(0,0,0,100))
         self.goToTitle= Node( window.get_width()/2-200/2, window.get_height()/2 ,200,100, None, Shape.RECTANGLE, pygame.Color(0,0,0), "Go to menu", pygame.Color(255,255,255))
@@ -98,7 +103,8 @@ class Game(Scene):
         return False
             
     def draw(self, window):
-        if gameState.sceneState != SceneState.DEATH: self.player.draw(window)
+        self.bg.draw(window)
+        if gameState.sceneState != SceneState.DEATH: self.player.draw(window, False)
         self.apple.draw(window)
         self.sawManager.draw(window)
         if gameState.sceneState != SceneState.DEATH: self.score.draw(window)
