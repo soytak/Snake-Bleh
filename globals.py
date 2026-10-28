@@ -13,7 +13,6 @@ class Mouse(Node):
         mouse.position.x = pygame.mouse.get_pos()[0]
         mouse.position.y = pygame.mouse.get_pos()[1]
 
-
 mouse = Mouse(0,0,0,0)
 
 window= pygame.display.set_mode((1920, 1080), pygame.NOFRAME)

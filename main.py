@@ -1,16 +1,21 @@
 import pygame
+pygame.mixer.pre_init()
+pygame.init()
 pygame.font.init()
+pygame.mixer.init()
 from globals import *
 from enum import Enum
 
 from game import Game
 from menu import Menu
 
-pygame.init()
 
 game = Game()
 menu = Menu()
 needGameReload = False
+
+pygame.mixer.music.load("assets/nintendo_esque_music_2.mp3")
+pygame.mixer.music.play(-1)
 
 clock = pygame.time.Clock()
 while gameState.scene != Scenes.QUIT:
