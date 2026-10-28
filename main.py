@@ -42,4 +42,3 @@ while gameState.scene != Scenes.QUIT:
     pygame.display.flip()
 
 pygame.quit()
-quit(0)
